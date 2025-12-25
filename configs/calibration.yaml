@@ -1,0 +1,34 @@
+pattern_cols: 9
+pattern_rows: 9
+center_distance_mm: 35
+
+#R_gimbal2imubody: [-1, 0, 0, 0, -1, 0, 0, 0, 1]
+R_gimbal2imubody: [0, 1, 0, 1, 0, 0, 0, 0, 1]
+
+camera_name: "hikrobot"
+exposure_ms: 30
+gain: 10.0
+vid_pid: "2bdf:0001"
+
+#####-----cboard参数-----#####
+quaternion_canid: 0x01
+bullet_speed_canid: 0x110
+send_canid: 0xff
+can_interface: "can0"
+
+#####-----message参数-----#####
+receive.gimbal: 1
+receive.shoot: 2
+send.gimbal: 1
+send.shoot: 2
+yaw: 1.0
+pitch: 0.0
+roll: 0.0
+bullet_speed: 30.0
+mode: 0
+color: 0
+serial_type: physical
+
+camera_matrix: [1748.2953850843094, 0, 802.44773469966958, 0, 1751.2602104441553, 559.00288950251445, 0, 0, 1]
+distort_coeffs: [-0.079840175919901668, 0.12684230659791565, 0.0010777208471872645, 0.0056644340950065784, 0]
+
