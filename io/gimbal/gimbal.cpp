@@ -602,6 +602,8 @@ void Gimbal::read_thread()
     //      gimbal_receive.yaw, gimbal_receive.pitch, gimbal_receive.roll,
     //      gimbal_receive.mode, gimbal_receive.color, shoot_receive.bullet_speed);
     auto yaw_ = receive_packet->yaw * M_PI / 180;
+    yaw_ -= 90;
+    yaw_ = -yaw_;
     auto pitch_ = receive_packet->pitch * M_PI / 180;
     auto roll_ = receive_packet->roll * M_PI / 180;
     Eigen::Vector3d ypr(yaw_, pitch_, roll_);

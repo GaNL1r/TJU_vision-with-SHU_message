@@ -469,6 +469,8 @@ void CBoard::send(Command command) const
   auto yaw_ = static_cast<float>(command.yaw);
   auto pitch_ = static_cast<float>(command.pitch);
   yaw_ = yaw_ * 180.0 / M_PI;
+  yaw_ -= 90;
+  yaw_ = -yaw_;
   pitch_ = pitch_ * 180.0 / M_PI;
   tools::logger()->info("send:{},{}",yaw_,pitch_);
   auto Is_fire = command.shoot;
@@ -501,6 +503,8 @@ void CBoard::callback()
       // 解算yaw, pitch, roll为四元数
       
       auto yaw_ = receive_packet->yaw * M_PI / 180;
+      yaw_ += 90;
+      yaw_ = -yaw_;
       auto pitch_ = receive_packet->pitch * M_PI / 180;
       tools::logger()->info("Rece:{},{}",yaw_,pitch_);
       auto roll_ = receive_packet->roll * M_PI / 180;
