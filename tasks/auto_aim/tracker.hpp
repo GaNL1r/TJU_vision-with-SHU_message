@@ -14,6 +14,9 @@
 
 namespace auto_aim
 {
+
+constexpr double kPicDistanceThreshold = 100;  //判断是否是同一块装甲板的阈值
+
 class Tracker
 {
 public:
@@ -42,6 +45,8 @@ private:
   Target target_;
   std::chrono::steady_clock::time_point last_timestamp_;
   ArmorPriority omni_target_priority_;
+  std::shared_ptr<Armor> last_armor_{};
+
 
   void state_machine(bool found);
 

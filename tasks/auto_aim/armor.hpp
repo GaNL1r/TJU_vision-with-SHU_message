@@ -5,6 +5,7 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 #include <vector>
+#include <numeric>
 
 namespace auto_aim
 {
@@ -118,6 +119,15 @@ struct Armor
   Armor(
     int color_id, int num_id, float confidence, const cv::Rect & box,
     std::vector<cv::Point2f> armor_keypoints, cv::Point2f offset);
+
+  /// 装甲板面积
+  [[nodiscard]] double Size() const {
+    return 0.5 * std::fabs((points[1] - points[0]).cross(points[2] - points[0]) + (points[2] - points[0]).cross(points[3] - points[0]));
+  }
+
+  /// 装甲板中心
+  [[nodiscard]] cv::Point2f Center() const { return std::accumulate(points.begin(), points.end(), cv::Point2f(0, 0)); }
+
 };
 
 }  // namespace auto_aim

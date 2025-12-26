@@ -1,8 +1,8 @@
 #include "tracker.hpp"
 
 #include <yaml-cpp/yaml.h>
-
 #include <tuple>
+#include <algorithm>
 
 #include "tools/logger.hpp"
 #include "tools/math_tools.hpp"
@@ -31,6 +31,7 @@ std::string Tracker::state() const { return state_; }
 std::list<Target> Tracker::track(
   std::list<Armor> & armors, std::chrono::steady_clock::time_point t, bool use_enemy_color)
 {
+  std::list<Target> targets;
   auto dt = tools::delta_time(t, last_timestamp_);
   last_timestamp_ = t;
 
@@ -42,6 +43,29 @@ std::list<Target> Tracker::track(
   // 过滤掉非我方装甲板
   armors.remove_if([&](const auto_aim::Armor & a) { return a.color != enemy_color_; });
 
+  if (armors.empty()) {
+    state_ = "lost";
+  }
+
+  if (last_armor_ == nullptr) {
+    armors.sort([&](Armor armor1, Armor armor2) -> bool {
+      return armor1.Size() > armor2.Size();
+    });
+  }
+  else if(!armors.empty()) {
+    /// 这是为了处理一辆车上的多块装甲板，其实就是让他一直追一块，因为这样的距离必然最小
+    armors.sort([&](Armor armor1, Armor armor2) -> bool {
+          return norm(armor1.Center() - last_armor_->Center()) < norm(armor2.Center() - last_armor_->Center());
+        });
+    /// 如果超出了一定距离，那肯定不正常，是烂的
+    if (norm(armors.front().Center() - last_armor_->Center()) > kPicDistanceThreshold) {
+      state_ = "lost";
+    }
+  }
+  last_armor_ = armors.empty()?nullptr:std::make_shared<Armor>(armors.front());
+
+
+
   // 过滤前哨站顶部装甲板
   // armors.remove_if([this](const auto_aim::Armor & a) {
   //   return a.name == ArmorName::outpost &&
@@ -49,17 +73,17 @@ std::list<Target> Tracker::track(
   //            solver_.oupost_reprojection_error(a, -15 * CV_PI / 180.0);
   // });
 
-  // 优先选择靠近图像中心的装甲板
-  armors.sort([](const Armor & a, const Armor & b) {
-    cv::Point2f img_center(1440 / 2, 1080 / 2);  // TODO
-    auto distance_1 = cv::norm(a.center - img_center);
-    auto distance_2 = cv::norm(b.center - img_center);
-    return distance_1 < distance_2;
-  });
-
-  // 按优先级排序，优先级最高在首位(优先级越高数字越小，1的优先级最高)
-  armors.sort(
-    [](const auto_aim::Armor & a, const auto_aim::Armor & b) { return a.priority < b.priority; });
+//  // 优先选择靠近图像中心的装甲板
+//  armors.sort([](const Armor & a, const Armor & b) {
+//    cv::Point2f img_center(1440 / 2, 1080 / 2);  //
+//    auto distance_1 = cv::norm(a.center - img_center);
+//    auto distance_2 = cv::norm(b.center - img_center);
+//    return distance_1 < distance_2;
+//  });
+//
+//  // 按优先级排序，优先级最高在首位(优先级越高数字越小，1的优先级最高)
+//  armors.sort(
+//    [](const auto_aim::Armor & a, const auto_aim::Armor & b) { return a.priority < b.priority; });
 
   bool found;
   if (state_ == "lost") {
@@ -91,7 +115,7 @@ std::list<Target> Tracker::track(
 
   if (state_ == "lost") return {};
 
-  std::list<Target> targets = {target_};
+  targets = {target_};
   return targets;
 }
 
