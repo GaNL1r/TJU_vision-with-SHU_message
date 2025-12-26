@@ -63,6 +63,7 @@ void load(
     auto img_path = fmt::format("{}/{}.jpg", input_folder, i);
     auto q_path = fmt::format("{}/{}.txt", input_folder, i);
     auto img = cv::imread(img_path);
+    cv::flip(img,img,-1);
     Eigen::Quaterniond q = read_q(q_path);
     if (img.empty()) break;
 

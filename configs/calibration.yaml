@@ -1,9 +1,9 @@
-pattern_cols: 9
-pattern_rows: 9
-center_distance_mm: 35
+pattern_cols: 7
+pattern_rows: 10
+center_distance_mm: 15
 
-R_gimbal2imubody: [1, 0, 0, 0, 1, 0, 0, 0, 1]
-#R_gimbal2imubody: [0, 1, 0, 1, 0, 0, 0, 0, 1]
+#R_gimbal2imubody: [-1, 0, 0, 0, -1, 0, 0, 0, 1]
+R_gimbal2imubody: [0, 1, 0, 1, 0, 0, 0, 0, 1]
 
 camera_name: "hikrobot"
 exposure_ms: 30

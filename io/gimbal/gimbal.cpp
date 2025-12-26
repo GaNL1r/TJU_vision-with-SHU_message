@@ -523,8 +523,11 @@ void Gimbal::send(
   //   reinterpret_cast<uint8_t *>(&tx_data_), sizeof(tx_data_) - sizeof(tx_data_.crc16));
   yaw = yaw *57.3;
   yaw += 90;
+  //yaw = -yaw;
+  if (yaw == +90) yaw = 0;
   yaw = -yaw;
-  if (yaw == -90) yaw = 0;
+  //if (yaw < -180) yaw += 360;
+  //if (yaw > 180) yaw -= 360;
   pitch = pitch * 57.3;
   pitch = -pitch;
   const srm::message::GimbalSend gimbal_send{yaw, pitch};
@@ -602,8 +605,6 @@ void Gimbal::read_thread()
     //      gimbal_receive.yaw, gimbal_receive.pitch, gimbal_receive.roll,
     //      gimbal_receive.mode, gimbal_receive.color, shoot_receive.bullet_speed);
     auto yaw_ = receive_packet->yaw * M_PI / 180;
-    yaw_ -= 90;
-    yaw_ = -yaw_;
     auto pitch_ = receive_packet->pitch * M_PI / 180;
     auto roll_ = receive_packet->roll * M_PI / 180;
     Eigen::Vector3d ypr(yaw_, pitch_, roll_);

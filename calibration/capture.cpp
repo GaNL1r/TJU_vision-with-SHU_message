@@ -35,6 +35,7 @@ void capture_loop(
   int count = 0;
   while (true) {
     camera.read(img, timestamp);
+    cv::flip(img,img,-1);
     Eigen::Quaterniond q = cboard.imu_at(timestamp);
 
     // 在图像上显示欧拉角，用来判断imuabs系的xyz正方向，同时判断imu是否存在零漂
@@ -48,7 +49,7 @@ void capture_loop(
     //auto success = cv::findCirclesGrid(img, cv::Size(10, 7), centers_2d);  // 默认是对称圆点图案
     //cv::drawChessboardCorners(img_with_ypr, cv::Size(10, 7), centers_2d, success);  // 显示识别结果
 
-    cv::Size pattern_size(9, 9); // 这里建议改为从yaml读取，此处暂设为固定值
+    cv::Size pattern_size(10, 7); // 这里建议改为从yaml读取，此处暂设为固定值
     std::vector<cv::Point2f> corners;
     bool success = cv::findChessboardCorners(img, pattern_size, corners,
         cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);

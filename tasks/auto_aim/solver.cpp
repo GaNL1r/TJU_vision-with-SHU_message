@@ -203,7 +203,7 @@ void Solver::optimize_yaw(Armor & armor) const
   auto min_error = 1e10;
   auto best_yaw = armor.ypr_in_world[0];
 
-  for (int i = 0; i < SEARCH_RANGE; i++) {
+  for (int i = -180; i < 180; i++) {
     double yaw = tools::limit_rad(yaw0 + i * CV_PI / 180.0);
     auto error = armor_reprojection_error(armor, yaw, (i - SEARCH_RANGE / 2) * CV_PI / 180.0);
 

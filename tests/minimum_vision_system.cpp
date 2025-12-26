@@ -46,6 +46,7 @@ int main(int argc, char * argv[])
 
     while (!exiter.exit()) {
       camera.read(img, t);
+      cv::flip(img,img,-1);
       detector.push(img, t);
     }
   });

@@ -468,8 +468,6 @@ void DM_IMU::get_imu_data_thread()
 
       // 解算yaw, pitch, roll为四元数
       auto yaw_ = receive_packet->yaw * M_PI / 180;
-      yaw_ -= 90;
-      yaw_ = -yaw_;
       auto pitch_ = receive_packet->pitch * M_PI / 180;
       auto roll_ = receive_packet->roll * M_PI / 180;
       Eigen::Vector3d ypr(yaw_, pitch_, roll_);
